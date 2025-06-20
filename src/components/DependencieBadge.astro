@@ -1,0 +1,13 @@
+---
+import type { Dependencie } from "@/constants/games";
+
+export interface Props {
+  dependencie: Dependencie;
+}
+
+const { dependencie } = Astro.props;
+---
+
+<span class="py-1 px-3 text-sm bg-slate-700 rounded-md text-gray-300"
+  >{dependencie.text}</span
+>
