@@ -1,0 +1,47 @@
+---
+import type { Game } from "@/constants/games";
+import DependencieBadge from "./DependencieBadge.astro";
+import ArrowRight from '@/icons/ArrowRight.svg'
+
+export interface Props {
+  game: Game;
+}
+
+const { game } = Astro.props;
+---
+
+<div
+  class="card flex flex-col bg-gray-800 w-92 h-70 rounded border border-slate-600 px-4 p-3 overflow-hidden cursor-cell hover:scale-105 transition"
+>
+  <header
+    class="flex flex-row gap-2 text-2xl text-gray-300 w-full items-center"
+  >
+    <svg
+      class={`size-9 rounded p-1`}
+      style={`background-color: ${game.color ?? "#4a5565"}`}
+    >
+      <use href={`/icons.svg${game.icon}`}></use>
+    </svg>
+    <h3>{game.title}</h3>
+  </header>
+  <p class="mt-3 text-gray-400 leading-5">
+    {game.description}
+  </p>
+
+  <div class="mt-auto">
+    <div
+      class="dependencies mt-2 flex gap-2 overflow-auto py-2"
+      style="scrollbar-gutter: stable;"
+    >
+      {game.dependencies.map((d) => <DependencieBadge dependencie={d} />)}
+    </div>
+
+    <a
+      href={`/wordle`}
+      class="w-full bg-white text-black mt-3 px-2 py-1.5 rounded cursor-pointer hover:bg-gray-300 transition active:scale-95 flex flex-row gap-2 items-center justify-center"
+      >Ir al juego {game.title}
+
+      <ArrowRight class="size-5" />
+    </a>
+  </div>
+</div>
