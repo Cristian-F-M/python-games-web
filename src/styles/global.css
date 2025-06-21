@@ -1,1 +1,14 @@
 @import "tailwindcss";
+
+
+@theme {
+  --font-fira-code: 'Fira Code', system-ui, sans-serif;
+}
+
+@font-face {
+  font-family: 'Fira Code';
+  src: url('/src/fonts/Fira_Code/FiraCode-VariableFont_wght.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
