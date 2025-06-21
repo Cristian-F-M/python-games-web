@@ -1,0 +1,79 @@
+/* One Ocean High Contrast Theme for Highlight.js */
+.hljs {
+  background: #0b0c14;
+  color: #c0c6c6;
+  font-family: 'Fira Code', monospace;
+  padding: 1em;
+  border-radius: 8px;
+}
+
+/* Comentarios */
+.hljs-comment,
+.hljs-quote {
+  color: #546e7a;
+  font-style: italic;
+}
+
+/* Palabras clave */
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal,
+.hljs-section,
+.hljs-link {
+  color: #d6b830;
+}
+
+/* Strings */
+.hljs-string,
+.hljs-title,
+.hljs-name,
+.hljs-type {
+  color: #6be235;
+}
+
+/* Funciones */
+.hljs-title.function_,
+.hljs-function .hljs-title {
+  color: #377cfc;
+}
+
+/* Números */
+.hljs-number,
+.hljs-meta .hljs-number {
+  color: #f78c6c;
+}
+
+/* Clases y tipos */
+.hljs-class .hljs-title,
+.hljs-type {
+  color: #ff5370;
+}
+
+/* Operadores y símbolos */
+.hljs-symbol,
+.hljs-bullet,
+.hljs-built_in,
+.hljs-attr {
+  color: #8282ff;
+}
+
+/* Decorators, annotations */
+.hljs-meta {
+  color: #ffcb6b;
+}
+
+/* Background para selecciones u otras personalizaciones */
+.hljs-emphasis {
+  font-style: italic;
+}
+.hljs-strong {
+  font-weight: bold;
+}
+
+.hljs-params {
+  color: #f0464d;
+}
+
+.hljs-subst {
+  color: #c0c6c6;
+}
