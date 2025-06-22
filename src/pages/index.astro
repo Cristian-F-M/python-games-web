@@ -15,7 +15,7 @@ import GameCard from "@/components/GameCard.astro";
     </p>
   </header>
 
-  <main class="flex flex-row flex-wrap w-10/12 mx-auto mt-15 text-gray-400">
+  <main class="flex flex-row flex-wrap w-10/12 mx-auto mt-15 text-gray-400 gap-6">
     {GAMES.map((g) => <GameCard game={g} />)}
   </main>
 </Layout>
