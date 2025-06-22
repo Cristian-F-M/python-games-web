@@ -379,7 +379,7 @@ if (!game) return Astro.redirect("404");
       "lex-row",
       "items-center",
       "w-full",
-      'ml-1'
+      'ml-1',
     );
 
     input.setAttribute("type", "text");
@@ -433,7 +433,16 @@ if (!game) return Astro.redirect("404");
 
   function print(...c) {
     const printLine = document.createElement("div");
-    const { content, lineBreak } = getRawCode(c);
+    const { content, lineBreak, lineBreakTag } = getRawCode(c);
+    const regex = new RegExp(`(${lineBreakTag})`, 'g');
+
+    for (const p of content.split(regex)) {
+      if (p === lineBreakTag) {
+        print("");
+      }
+    }
+
+    const newContent = content.replace(regex, "");
 
     const showIndicator = lastLineBreak || lineBreak;
     const indicator = showIndicator ? newLineIndicator : "";
@@ -442,7 +451,7 @@ if (!game) return Astro.redirect("404");
     if (showIndicator) printLine.classList.add("!-ml-1");
 
     printLine.classList.add("print-line");
-    printLine.innerHTML = ansiToHtml(`${indicator}${content}`);
+    printLine.innerHTML = ansiToHtml(`${indicator}${newContent}`);
 
     lastLineBreak = lineBreak;
     if ($terminal) $terminal.appendChild(printLine);
@@ -487,10 +496,10 @@ if (!game) return Astro.redirect("404");
     }
 
     const stringContent = [content.join(sep), end !== lineBreakTag ? end : ""]
-      .join("").replace(/\s/g, "&nbsp;")
-      .replace(lineBreakTag, "");
+      .join("")
+      .replace(/\s/g, "&nbsp;");
     const lineBreak = [end, sep].includes(lineBreakTag);
-    return { content: stringContent, lineBreak };
+    return { content: stringContent, lineBreak, lineBreakTag };
   }
 
   function endScript() {
