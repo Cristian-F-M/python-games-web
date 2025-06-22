@@ -435,7 +435,7 @@ if (!game) return Astro.redirect("404");
     const printLine = document.createElement("div");
     const { content, lineBreak } = getRawCode(c);
 
-    const showIndicator = lastLineBreak;
+    const showIndicator = lastLineBreak || lineBreak;
     const indicator = showIndicator ? newLineIndicator : "";
 
     if (lineBreak) printLine.classList.add("line-break");
