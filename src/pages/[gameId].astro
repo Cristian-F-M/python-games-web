@@ -1,0 +1,526 @@
+---
+import type { GetStaticPaths } from "astro";
+import { GAMES } from "@/constants/games";
+import Layout from "@/layouts/Layout.astro";
+import ArrowLeft from "@/icons/ArrowLeft.svg";
+import ChevronRight from "@/icons/ChevronRight.svg";
+import Check from "@/icons/Check.svg";
+import hljs from "highlight.js/lib/core";
+import python from "highlight.js/lib/languages/python";
+import "highlight.js/styles/github.min.css";
+import "@/styles/one-ocean-high-contrast.css";
+
+hljs.registerLanguage("python", python);
+
+export const getStaticPaths = (() => {
+  return GAMES.map(({ id }) => ({ params: { gameId: id } }));
+}) satisfies GetStaticPaths;
+
+const { gameId } = Astro.params;
+const game = GAMES.find((g) => g.id === gameId);
+
+if (!game) return Astro.redirect("404");
+---
+
+<Layout title={`Juego ${game.title}`} description={game.description}>
+  <a
+    class="absolute top-0 left-0 m-3 text-gray-200 bg-gray-600 px-2 py-1 rounded flex flex-row gap-1 items-center hover:bg-gray-500 transition-colors"
+    href="/"
+  >
+    <ArrowLeft class="size-5" />
+    Volver
+  </a>
+
+  <header class="text-white w-9/12 mx-auto my-10">
+    <h1 class="text-4xl text-center">Juego {game.title}</h1>
+  </header>
+
+  <main class="w-10/12 mx-auto mb-20 overflow-y-auto">
+    <div
+      class="tabs w-full h-14 bg-gray-800 rounded flex flex-row gap-3 px-1.5 py-1.5 items-center justify-evenly border border-gray-600/60 sticky top-0"
+    >
+      <div class="indicator absolute"></div>
+      <div data-section-id="execution" id="tab-execution" class="tab">
+        Ejecución
+      </div>
+      <div data-section-id="original-code" id="tab-original-code" class="tab">
+        Código original
+      </div>
+      <div data-section-id="modified-code" id="tab-modified-code" class="tab">
+        Código Modificado
+      </div>
+      <div
+        data-section-id="game-description"
+        id="tab-game-description"
+        class="tab"
+      >
+        Description
+      </div>
+    </div>
+
+    <div id="code-sections" active-section="loading" class="text-white mt-5">
+      <section id="section--load" class="code-section animate-pulse"></section>
+      <section
+        data-status="waiting"
+        id="section--execution"
+        class="terminal-section mx-auto !bg-black border border-slate-300 p-3 py-10 overflow-auto font-fira-code gap-1 min-h-96"
+      >
+        <button id="start-button" class="execute-button">
+          <ChevronRight class="size-5" />
+          Iniciar juego
+        </button>
+        <div
+          id="loading-pyodide"
+          class="loading-pyodide text-green-500 [&_svg]:size-5 flex-col gap-0.5 mt-2 hidden"
+        >
+          <span id="starting-python">
+            <ChevronRight />
+            Inciando entorno Python...
+          </span>
+          <span id="starting-pyodide">
+            <Check />
+            Inicializando Pyodide...
+          </span>
+          <span id="loading-dependencies">
+            <Check />
+            Descargando dependencias:
+            {
+              game.dependencies.map((d, index) => {
+                const maxDependencies = 4;
+                if (index > maxDependencies) return null;
+                if (index >= maxDependencies)
+                  return (
+                    <span class="ml-1 cursor-default bg-green-900/30 px-2 py-1 rounded">
+                      ...
+                    </span>
+                  );
+
+                return (
+                  <span class="hover:underline cursor-all-scroll bg-green-900/30 px-2 py-1 rounded">
+                    {d.text}
+                  </span>
+                );
+              })
+            }
+          </span>
+          <span id="pyodide-loaded">
+            <Check />
+            Pyodide cargado...
+          </span>
+          <span id="starting-executing">
+            <Check />
+            Ejecutando script
+          </span>
+        </div>
+      </section>
+      <section id="section--original-code" class="code-section">
+        <pre><code class="language-python">{game.originalCode}</code></pre>
+      </section>
+      <section id="section--modified-code" class="code-section">
+        <pre><code class="language-python">{game.modifiedCode}</code></pre>
+      </section>
+      <section id="section--game-description" class="">
+        {game.description}
+      </section>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  @reference "tailwindcss";
+
+  #code-sections {
+  }
+
+  #code-sections section {
+    @apply hidden bg-gray-800 px-4 py-6  rounded border border-gray-700;
+  }
+
+  .code-section,
+  .terminal-section {
+  }
+
+  .code-section {
+    @apply !p-0;
+  }
+
+  #code-sections[active-section="execution"] #section--execution,
+  #code-sections[active-section="original-code"] #section--original-code,
+  #code-sections[active-section="loading"] #section--load,
+  #code-sections[active-section="modified-code"] #section--modified-code,
+  #code-sections[active-section="game-description"] #section--game-description {
+    @apply block;
+  }
+
+  #section--execution[data-status="waiting"] {
+  }
+</style>
+
+<style>
+  @reference "tailwindcss";
+
+  .tabs .tab {
+    @apply px-4 py-1 rounded h-full flex items-center justify-center text-center text-gray-100 w-[calc(100%_/_3)] hover:ring-1 ring-gray-500 cursor-pointer z-50;
+  }
+
+  .indicator {
+    @apply rounded pointer-events-none bg-gray-700 left-(--left,_0%) z-10 !w-(--width) !h-10/12 transition-all duration-300 opacity-0 -ml-px;
+  }
+</style>
+
+<style is:global>
+  @reference "tailwindcss";
+
+  .print-line.line-break {
+    @apply -ml-1 w-full flex;
+  }
+
+  .print-line {
+    @apply ml-0 w-fit inline-flex h-fit text-sm text-gray-400 flex-row gap-0 items-center;
+  }
+
+  .loading-pyodide > span {
+    @apply flex-row gap-1 items-center hidden;
+  }
+
+  .execute-button {
+    @apply hidden flex-row gap-0.5 items-center text-green-500 font-semibold px-3 py-2 rounded hover:underline hover:bg-green-700/50 bg-green-800/40 border border-green-800/30 hover:border-green-900/60 transition-colors cursor-pointer active:bg-green-600/30 active:text-green-400;
+  }
+
+  .loading-pyodide > span.show {
+    @apply flex;
+  }
+
+  #section--execution[data-status="waiting"] #start-button,
+  #section--execution[data-status="loading-pyodide"] .loading-pyodide,
+  #section--execution[data-status="executing"] .executing,
+  #section--execution[data-status="end-script"] #re-execute-button {
+    @apply flex;
+  }
+</style>
+
+<style is:global>
+  @reference "tailwindcss";
+
+  * {
+    scrollbar-gutter: stable;
+  }
+
+  /* html {
+    overflow: hidden;
+  } */
+</style>
+
+<script is:inline type="module">
+  const tabsWrapper = document.querySelector(".tabs");
+  const tabIndicator = tabsWrapper.querySelector(".indicator");
+  const codeSections = document.querySelector("#code-sections");
+
+  window.setTabIndicator = function (el) {
+    if (!el || !tabsWrapper || !tabIndicator) return;
+    const hash = window.location.hash.substring(1);
+
+    const { left, top, width, height, x, y } = el.getBoundingClientRect();
+    const { left: wrapperLeft, top: wrapperTop } =
+      tabsWrapper.getBoundingClientRect();
+
+    const newLeft = left - wrapperLeft;
+
+    tabIndicator.style.setProperty("--left", `${newLeft}px`);
+    tabIndicator.style.setProperty("--width", `${width}px`);
+    tabIndicator.style.opacity = "1";
+
+    codeSections.setAttribute("active-section", hash);
+  };
+</script>
+
+<script>
+  const tabsWrapper = document.querySelector(".tabs") as HTMLDivElement;
+  const tabs = tabsWrapper?.querySelectorAll(
+    ".tab",
+  ) as NodeListOf<HTMLDivElement>;
+
+  for (const tab of tabs) {
+    tab.addEventListener("click", (e) => {
+      const target = e.target as HTMLDivElement;
+
+      if (!target) return;
+      window.setTabIndicator(target);
+      const newHash = target.dataset.sectionId || "execution";
+      window.location.hash = newHash;
+    });
+  }
+</script>
+
+<script>
+  function setTabIndicator() {
+    const hash = window.location.hash.substring(1);
+    const defaultHash = "execution";
+
+    if (!hash) window.location.hash = defaultHash;
+
+    const selector = `[data-section-id='${hash || defaultHash}']`;
+    const tab = document.querySelector(selector) as HTMLDivElement;
+
+    if (tab) {
+      window.setTabIndicator(tab);
+    }
+  }
+
+  setTabIndicator();
+
+  window.addEventListener("hashchange", () => {
+    setTabIndicator();
+  });
+</script>
+
+<script>
+  import hljs from "highlight.js";
+  hljs.highlightAll();
+</script>
+
+<script is:inline type="module" src="/src/scripts/ansi-to-html.ts"></script>
+
+<script
+  is:inline
+  type="module"
+  define:vars={{
+    dependencies: game.dependencies.map((d) => d.text),
+    modified_code: game.modifiedCode,
+  }}
+>
+  import "/pyodide/pyodide.js";
+  import { ansiToHtml } from "/src/scripts/ansi-to-html";
+
+  const executeButton = document.querySelector("#start-button");
+  const $terminal = document.querySelector("#section--execution");
+  const newLineIndicator = `<span class="!text-[10px] self-start mt-0.5">>>>&nbsp;</span>`;
+  const loadingPyodide = document.querySelector("#loading-pyodide");
+  const loadingPyodideClone = loadingPyodide.cloneNode(true);
+  let pyodide = null;
+
+  executeButton?.addEventListener("click", (event) => {
+    executeGame();
+  });
+
+  async function executeGame() {
+    $terminal.setAttribute("data-status", "loading-pyodide");
+
+    showLoadingLog("starting-python");
+
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    showLoadingLog("starting-pyodide");
+
+    if (!pyodide) {
+      pyodide = await loadPyodide({
+        memory: {
+          initial: 256,
+          maximum: 2048,
+        },
+      });
+    }
+
+    pyodide.globals.set("input", (prompt) => {
+      const { input, valuePromise } = getInput(prompt);
+      input.focus();
+      return valuePromise;
+    });
+    pyodide.globals.set("print", print);
+    pyodide.globals.set("clear_terminal", clearTerminal);
+
+    await pyodide.loadPackage("micropip");
+    const micropip = pyodide.pyimport("micropip");
+
+    showLoadingLog("loading-dependencies");
+
+    for (const d of dependencies) {
+      await micropip.install(d);
+    }
+
+    showLoadingLog("pyodide-loaded");
+
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    showLoadingLog("starting-executing");
+
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    $terminal.setAttribute("data-status", "executing");
+
+    if (window.location.hash !== '#execution') {
+      alert('Juego executado')
+    }
+    await pyodide.runPythonAsync(modified_code);
+    endScript();
+  }
+
+  function getInput(prompt) {
+    const formfield = document.createElement("formfield");
+    const innerDiv = document.createElement("div");
+    const caret = document.createElement("span");
+    const input = document.createElement("input");
+    const label = document.createElement("label");
+    const inputId = crypto.randomUUID();
+
+    formfield.classList.add(
+      "console-input",
+      "text-gray-400",
+      "flex",
+      "flex-row",
+      "gap-1",
+      "items-center",
+      "w-full",
+      "-ml-1",
+    );
+    innerDiv.classList.add(
+      "relative",
+      "flex",
+      "lex-row",
+      "items-center",
+      "w-full",
+    );
+
+    input.setAttribute("type", "text");
+    input.setAttribute("id", inputId);
+    input.classList.add(
+      "w-full",
+      "outline-none",
+      "text-gray-400",
+      "text-sm",
+      "ml-0",
+    );
+
+    input.addEventListener("input", () => {
+      input.setAttribute("value", input.value);
+    });
+
+    const { promise, resolve, reject } = Promise.withResolvers();
+
+    if ($terminal) {
+      $terminal.appendChild(formfield);
+      input.focus();
+    }
+
+    let inputValue = "";
+
+    window.addEventListener("keydown", (event) => {
+      const { key } = event;
+      const target = event.target;
+
+      if (target === $terminal || $terminal?.contains(target)) {
+        if (key === "Enter") {
+          inputValue = target.value;
+          input.setAttribute("disabled", "true");
+          resolve(inputValue);
+        }
+      }
+    });
+
+    innerDiv.appendChild(input);
+    label.classList.add("w-fit", "whitespace-nowrap", "text-sm", "-mr-1");
+    label.setAttribute("for", inputId);
+
+    label.innerHTML = `${newLineIndicator} ${prompt ?? ""}`;
+    formfield.appendChild(label);
+    formfield.appendChild(innerDiv);
+
+    return { formfield, label, input, innerDiv, caret, valuePromise: promise };
+  }
+
+  let lastLineBreak = true;
+
+  function print(...c) {
+    const printLine = document.createElement("div");
+    const { content, lineBreak } = getRawCode(c);
+
+    const showIndicator = lastLineBreak;
+    const indicator = showIndicator ? newLineIndicator : "";
+
+    if (lineBreak) printLine.classList.add("line-break");
+    if (showIndicator) printLine.classList.add("!-ml-1");
+
+    printLine.classList.add("print-line");
+    printLine.innerHTML = ansiToHtml(`${indicator}${content}`);
+
+    lastLineBreak = lineBreak;
+    if ($terminal) $terminal.appendChild(printLine);
+  }
+
+  function getIsObject(x) {
+    return (
+      typeof x === "object" &&
+      x !== null &&
+      !Array.isArray(x) &&
+      Object.getPrototypeOf(x) === Object.prototype
+    );
+  }
+
+  function getRawCode(c) {
+    const lineBreakTag = "<br>";
+    let end = lineBreakTag;
+    let sep = " ";
+    const content = [];
+
+    for (const part of c) {
+      if (getIsObject(part)) {
+        for (const [k, v] of Object.entries(part)) {
+          if (k === "end" && typeof v === "string")
+            end = v.replace(/\n/g, lineBreakTag).replace(/\s/g, "&nbsp;");
+
+          if (k === "sep" && typeof v === "string")
+            sep = v.replace(/\n/g, lineBreakTag);
+        }
+        continue;
+      }
+
+      if (typeof part === "string") {
+        content.push(part.replace(/\n/g, lineBreakTag));
+        continue;
+      }
+      if (part == null) {
+        content.push("None");
+        continue;
+      }
+      content.push(String(part));
+    }
+
+    const stringContent = [content.join(sep), end !== lineBreakTag ? end : ""]
+      .join("")
+      .replace(lineBreakTag, "");
+    const lineBreak = [end, sep].includes(lineBreakTag);
+    return { content: stringContent, lineBreak };
+  }
+
+  function endScript() {
+    if (!$terminal) return;
+    $terminal.setAttribute("data-status", "end-script");
+
+    const reExecuteButton = document.createElement("button");
+    reExecuteButton.textContent = "Volver a ejecutar";
+    reExecuteButton.classList.add("execute-button", "mt-10");
+    reExecuteButton.setAttribute("id", "re-execute-button");
+
+    reExecuteButton.addEventListener("click", () => {
+      clearTerminal();
+
+      $terminal.appendChild(loadingPyodideClone);
+
+      executeGame();
+    });
+
+    $terminal.innerHTML +=
+      '<span class="text-sm text-gray-400 flex flex-row gap-1 items-center w-full mt-10">🎉 ¡Proceso completado!</span>';
+
+    $terminal.appendChild(reExecuteButton);
+  }
+
+  function clearTerminal() {
+    if ($terminal) $terminal.innerHTML = "";
+  }
+
+  function showLoadingLog(id) {
+    const log = document.querySelector(`#${id}`);
+    if (!log) return;
+
+    log.classList.add("show");
+  }
+</script>
