@@ -346,8 +346,8 @@ if (!game) return Astro.redirect("404");
     await new Promise((resolve) => setTimeout(resolve, 1500));
     $terminal.setAttribute("data-status", "executing");
 
-    if (window.location.hash !== '#execution') {
-      alert('Juego executado')
+    if (window.location.hash !== "#execution") {
+      alert("Juego executado");
     }
     await pyodide.runPythonAsync(modified_code);
     endScript();
@@ -361,7 +361,7 @@ if (!game) return Astro.redirect("404");
     const label = document.createElement("label");
     const inputId = crypto.randomUUID();
 
-    prompt.replace(/\s/g, '&nbsp;')
+    prompt.replace(/\s/g, "&nbsp;");
 
     formfield.classList.add(
       "console-input",
@@ -379,7 +379,7 @@ if (!game) return Astro.redirect("404");
       "lex-row",
       "items-center",
       "w-full",
-      'ml-1',
+      "ml-1",
     );
 
     input.setAttribute("type", "text");
@@ -434,7 +434,7 @@ if (!game) return Astro.redirect("404");
   function print(...c) {
     const printLine = document.createElement("div");
     const { content, lineBreak, lineBreakTag } = getRawCode(c);
-    const regex = new RegExp(`(${lineBreakTag})`, 'g');
+    const regex = new RegExp(`(${lineBreakTag})`, "g");
 
     for (const p of content.split(regex)) {
       if (p === lineBreakTag) {
