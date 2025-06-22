@@ -37,7 +37,7 @@ const { game } = Astro.props;
     </div>
 
     <a
-      href={`/wordle`}
+      href={`/${game.id}`}
       class="w-full bg-white text-black mt-3 px-2 py-1.5 rounded cursor-pointer hover:bg-gray-300 transition active:scale-95 flex flex-row gap-2 items-center justify-center"
       >Ir al juego {game.title}
 
