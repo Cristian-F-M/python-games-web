@@ -40,7 +40,12 @@ if (!game) return Astro.redirect("404");
       class="tabs w-full h-14 bg-gray-800 rounded flex flex-row gap-3 px-1.5 py-1.5 items-center justify-evenly border border-gray-600/60 sticky top-0"
     >
       <div class="indicator absolute"></div>
-      <div data-section-id="execution" id="tab-execution" class="tab">
+      <div data-section-id="execution" id="tab-execution" class="tab relative">
+        <span
+          id="execution-indicator"
+          class="absolute top-1 right-0.5 size-fit text-3xl leading-0 text-green-500 hidden"
+          >•</span
+        >
         Ejecución
       </div>
       <div data-section-id="original-code" id="tab-original-code" class="tab">
@@ -125,6 +130,23 @@ if (!game) return Astro.redirect("404");
     </div>
   </main>
 </Layout>
+
+<style>
+  #execution-indicator.show {
+    @apply inline-flex scale-100 opacity-100;
+
+    @starting-style {
+      scale: 0;
+      opacity: 0;
+    }
+  }
+
+  #execution-indicator {
+    opacity: 0;
+    scale: 0;
+    transition: all 0.3s allow-discrete;
+  }
+</style>
 
 <style>
   @reference "tailwindcss";
@@ -240,6 +262,10 @@ if (!game) return Astro.redirect("404");
     ".tab",
   ) as NodeListOf<HTMLDivElement>;
 
+  const executionIndicator = document.querySelector(
+    "#execution-indicator",
+  ) as HTMLDivElement;
+
   for (const tab of tabs) {
     tab.addEventListener("click", (e) => {
       const target = e.target as HTMLDivElement;
@@ -248,6 +274,10 @@ if (!game) return Astro.redirect("404");
       window.setTabIndicator(target);
       const newHash = target.dataset.sectionId || "execution";
       window.location.hash = newHash;
+
+      if (window.location.hash === "#execution") {
+        executionIndicator.classList.remove("show");
+      }
     });
   }
 </script>
@@ -291,7 +321,7 @@ if (!game) return Astro.redirect("404");
 >
   import "/pyodide/pyodide.js";
   import { ansiToHtml } from "/src/scripts/ansi-to-html";
-
+  const executionIndicator = document.querySelector("#execution-indicator");
   const executeButton = document.querySelector("#start-button");
   const $terminal = document.querySelector("#section--execution");
   const newLineIndicator = `<span class="!text-[10px] self-start mt-0.5">>>>&nbsp;</span>`;
@@ -347,7 +377,7 @@ if (!game) return Astro.redirect("404");
     $terminal.setAttribute("data-status", "executing");
 
     if (window.location.hash !== "#execution") {
-      alert("Juego executado");
+      executionIndicator.classList.add("show");
     }
     await pyodide.runPythonAsync(modified_code);
     endScript();
