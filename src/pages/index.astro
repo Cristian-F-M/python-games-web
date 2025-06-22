@@ -1,16 +1,55 @@
 ---
-import '@/styles/global.css'
+import Layout from "@/layouts/Layout.astro";
+import "@/styles/global.css";
+import { GAMES } from "@/constants/games";
+import GameCard from "@/components/GameCard.astro";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Python Games</title>
-	</head>
-	<body>
-		<h1 class="text-4xl text-green-400"></h1>
-	</body>
-</html>
+<Layout title="Python Games" description="">
+  <header class="text-gray-300 mt-10">
+    <h1 class="text-white text-5xl text-center">Juegos en Python</h1>
+    <p class="mt-3 text-center w-8/12 mx-auto text-gray-400 text-lg leading-6">
+      Lista de juegos realizados con el lenguaje de programación Python para la
+      consola, utilizando mi celular móvil como dispositivo, usando Acode como
+      editor de código y termux para la terminal.
+    </p>
+  </header>
+
+  <main class="flex flex-row flex-wrap w-10/12 mx-auto mt-15 text-gray-400">
+    {GAMES.map((g) => <GameCard game={g} />)}
+  </main>
+</Layout>
+
+<style>
+  body {
+    --sb-track-color: #232e33;
+    --sb-thumb-color: #1c398e;
+    --sb-thumb-hover-color: #2549b4;
+    --sb-size: 7px;
+  }
+
+  .dependencies::-webkit-scrollbar {
+    width: 100%;
+    height: var(--sb-size);
+  }
+
+  .dependencies::-webkit-scrollbar-track {
+    background: var(--sb-track-color);
+    border-radius: 8px;
+  }
+
+  .dependencies::-webkit-scrollbar-thumb {
+    background: var(--sb-thumb-color);
+    border-radius: 8px;
+  }
+
+  .dependencies::-webkit-scrollbar-thumb:hover {
+    background: var(--sb-thumb-hover-color);
+  }
+
+  @supports not selector(::-webkit-scrollbar) {
+    .dependencies {
+      scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
+    }
+  }
+</style>
