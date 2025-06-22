@@ -361,6 +361,8 @@ if (!game) return Astro.redirect("404");
     const label = document.createElement("label");
     const inputId = crypto.randomUUID();
 
+    prompt.replace(/\s/g, '&nbsp;')
+
     formfield.classList.add(
       "console-input",
       "text-gray-400",
@@ -484,7 +486,7 @@ if (!game) return Astro.redirect("404");
     }
 
     const stringContent = [content.join(sep), end !== lineBreakTag ? end : ""]
-      .join("")
+      .join("").replace(/\s/g, "&nbsp;")
       .replace(lineBreakTag, "");
     const lineBreak = [end, sep].includes(lineBreakTag);
     return { content: stringContent, lineBreak };
