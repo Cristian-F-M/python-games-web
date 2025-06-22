@@ -285,7 +285,7 @@ if (!game) return Astro.redirect("404");
   is:inline
   type="module"
   define:vars={{
-    dependencies: game.dependencies.map((d) => d.text),
+    dependencies: game.dependencies.map((d) => d.packageName),
     modified_code: game.modifiedCode,
   }}
 >
