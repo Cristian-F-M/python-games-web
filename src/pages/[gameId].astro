@@ -88,7 +88,7 @@ if (!game) return Astro.redirect("404");
           </span>
           <span id="loading-dependencies">
             <Check />
-            Descargando dependencias:
+            Descargando dependencias{game.dependencies.length > 0 ? ':' : ''}
             {
               game.dependencies.map((d, index) => {
                 const maxDependencies = 4;
