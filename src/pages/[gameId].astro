@@ -408,7 +408,7 @@ const modifiedCode = "modifiedCode" in game ? game.modifiedCode : null;
     if (window.location.hash !== "#execution") {
       executionIndicator.classList.add("show");
     }
-    if (modifiedCode) await pyodide.runPythonAsync(modified_code);
+    if (modified_code) await pyodide.runPythonAsync(modified_code);
     endScript();
   }
 
