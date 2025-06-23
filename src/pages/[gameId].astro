@@ -20,6 +20,8 @@ const { gameId } = Astro.params;
 const game = GAMES.find((g) => g.id === gameId);
 
 if (!game) return Astro.redirect("404");
+
+const modifiedCode = "modifiedCode" in game ? game.modifiedCode : null;
 ---
 
 <Layout title={`Juego ${game.title}`} description={game.description}>
@@ -88,7 +90,7 @@ if (!game) return Astro.redirect("404");
           </span>
           <span id="loading-dependencies">
             <Check />
-            Descargando dependencias{game.dependencies.length > 0 ? ':' : ''}
+            Descargando dependencias{game.dependencies.length > 0 ? ":" : ""}
             {
               game.dependencies.map((d, index) => {
                 const maxDependencies = 4;
@@ -122,7 +124,34 @@ if (!game) return Astro.redirect("404");
         <pre><code class="language-python">{game.originalCode}</code></pre>
       </section>
       <section id="section--modified-code" class="code-section">
-        <pre><code class="language-python">{game.modifiedCode}</code></pre>
+        {
+          "modifiedCode" in game && (
+            <pre>
+              <code class="language-python">{game.modifiedCode}</code>
+            </pre>
+          )
+        }
+        {
+          !("modifiedCode" in game) && "videoUrl" in game && (
+            <div class="px-4 py-3 text-gray-400">
+              <p>
+                Debido a estado del código no fue posible realizar la adaptación
+                para ser ejecutando en la web, pido disculpas por el
+                inconveniente
+              </p>
+              <p class="">
+                Te invido a ver un video de demostración de la ejecución.
+              </p>
+              <a
+                class="bg-blue-900 border border-blue-700 hover:scale-105 transition-transform px-3 py-1.5 block w-fit rounded mt-3 text-gray-200"
+                target="_blank"
+                href={game.videoUrl}
+              >
+                Ver video
+              </a>
+            </div>
+          )
+        }
       </section>
       <section id="section--game-description" class="">
         {game.description}
@@ -316,7 +345,7 @@ if (!game) return Astro.redirect("404");
   type="module"
   define:vars={{
     dependencies: game.dependencies.map((d) => d.packageName),
-    modified_code: game.modifiedCode,
+    modified_code: modifiedCode,
   }}
 >
   import "/pyodide/pyodide.js";
@@ -379,7 +408,7 @@ if (!game) return Astro.redirect("404");
     if (window.location.hash !== "#execution") {
       executionIndicator.classList.add("show");
     }
-    await pyodide.runPythonAsync(modified_code);
+    if (modifiedCode) await pyodide.runPythonAsync(modified_code);
     endScript();
   }
 
