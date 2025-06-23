@@ -391,7 +391,7 @@ if (!game) return Astro.redirect("404");
     const label = document.createElement("label");
     const inputId = crypto.randomUUID();
 
-    prompt.replace(/\s/g, "&nbsp;");
+    prompt?.replace(/\s/g, "&nbsp;");
 
     formfield.classList.add(
       "console-input",
