@@ -497,23 +497,25 @@ const modifiedCode = "modifiedCode" in game ? game.modifiedCode : null;
 
     for (const p of content.split(regex)) {
       if (p === lineBreakTag) {
-        print("");
+        print('');
+        continue;
       }
+
+      const newContent = content.replace(regex, "");
+      const showIndicator = lastLineBreak || lineBreak;
+      const indicator = showIndicator ? newLineIndicator : "";
+
+      if (lineBreak) printLine.classList.add("line-break");
+      if (showIndicator) printLine.classList.add("!-ml-1");
+
+      printLine.classList.add("print-line");
+      printLine.innerHTML = ansiToHtml(`${indicator}${newContent}`);
+
+      lastLineBreak = lineBreak;
+
+      printLine.innerHTML = p;
+      if ($terminal) $terminal.appendChild(printLine);
     }
-
-    const newContent = content.replace(regex, "");
-
-    const showIndicator = lastLineBreak || lineBreak;
-    const indicator = showIndicator ? newLineIndicator : "";
-
-    if (lineBreak) printLine.classList.add("line-break");
-    if (showIndicator) printLine.classList.add("!-ml-1");
-
-    printLine.classList.add("print-line");
-    printLine.innerHTML = ansiToHtml(`${indicator}${newContent}`);
-
-    lastLineBreak = lineBreak;
-    if ($terminal) $terminal.appendChild(printLine);
   }
 
   function getIsObject(x) {
