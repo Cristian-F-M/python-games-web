@@ -116,9 +116,11 @@ const modified_code = String.raw`
 import os
 import requests
 import random
+from pyodide.http import pyfetch
 
 
 async def get_word():
+    print('Cargando palabra...')
     words = [
         "mediaban",
         "ahínco",
@@ -152,7 +154,7 @@ async def get_word():
         "desconfianza",
     ]
     try:
-        res = requests.get(
+        res = await pyfetch(
             "https://random-word-api.herokuapp.com/word", headers={"Content-Type": "application/json"},
         )
         data = res.json()
