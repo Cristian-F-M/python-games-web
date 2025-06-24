@@ -10,6 +10,7 @@ import python from "highlight.js/lib/languages/python";
 import "highlight.js/styles/github.min.css";
 import "@/styles/one-ocean-high-contrast.css";
 import Github from "@/components/Github.astro";
+import '../scripts/ansi-to-html.ts'
 
 hljs.registerLanguage("python", python);
 
@@ -341,7 +342,6 @@ const modifiedCode = "modifiedCode" in game ? game.modifiedCode : null;
   hljs.highlightAll();
 </script>
 
-<script is:inline type="module" src="/src/scripts/ansi-to-html.ts"></script>
 
 <script
   is:inline
