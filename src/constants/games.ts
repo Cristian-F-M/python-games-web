@@ -19,6 +19,7 @@ export interface BaseGame {
 	description: string;
 	originalCode: string;
 	dependencies: Dependencie[];
+	imageUrl: string;
 }
 
 export type Game = BaseGame & ({ modifiedCode: string } | { videoUrl: string });
@@ -41,6 +42,7 @@ export const GAMES: Games = [
 			{ packageName: "simple_colors", text: "simple_colors" },
 			{ packageName: "unidecode", text: "unidecode" },
 		],
+		imageUrl: "/images/wordle.webp",
 	},
 	{
 		id: "ahorcado",
@@ -56,6 +58,7 @@ export const GAMES: Games = [
 				text: "requests",
 			},
 		],
+		imageUrl: "/images/ahorcado.webp",
 	},
 	{
 		id: "blackjack",
@@ -71,6 +74,7 @@ export const GAMES: Games = [
 			},
 		],
 		videoUrl: "/videos/blackjack.mp4",
+		imageUrl: "/images/blackjack.webp",
 	},
 	{
 		id: "triqui",
@@ -81,5 +85,6 @@ export const GAMES: Games = [
 		modifiedCode: modified_triqui,
 		originalCode: original_triqui,
 		dependencies: [],
+		imageUrl: "/images/triqui.webp",
 	},
 ];
