@@ -351,7 +351,7 @@ const modifiedCode = "modifiedCode" in game ? game.modifiedCode : null;
     modified_code: modifiedCode,
   }}
 >
-  import "/pyodide/pyodide.js";
+  import { loadPyodide }  from "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.mjs" 
   import { ansiToHtml } from "/src/scripts/ansi-to-html";
   const executionIndicator = document.querySelector("#execution-indicator");
   const executeButton = document.querySelector("#start-button");
