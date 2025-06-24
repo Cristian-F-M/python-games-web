@@ -28,7 +28,7 @@ export type Games = Game[];
 export const GAMES: Games = [
 	{
 		id: "wordle",
-		title: "Wrodle",
+		title: "Wordle",
 		icon: "#wordle",
 		description: `Wordle es un juego en Python donde el jugador tiene seis intentos para adivinar una palabra secreta de cinco letras. La palabra objetivo se obtiene dinámicamente usando fetching desde una API de palabras aleatorias. Cada intento del jugador se evalúa letra por letra, marcando coincidencias exactas y parciales. Se utiliza colorizado en la terminal para mostrar el resultado: verde para letras en la posición correcta, amarillo para letras presentes pero mal ubicadas, y gris para letras incorrectas. El juego muestra una cuadrícula con retroalimentación visual tras cada intento, facilitando la deducción. Finaliza al acertar la palabra o agotar los intentos, mostrando un mensaje de éxito o la palabra correcta.`,
 		modifiedCode: modified_wordle,
