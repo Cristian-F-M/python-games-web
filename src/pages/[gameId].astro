@@ -10,7 +10,7 @@ import python from "highlight.js/lib/languages/python";
 import "highlight.js/styles/github.min.css";
 import "@/styles/one-ocean-high-contrast.css";
 import Github from "@/components/Github.astro";
-import '../scripts/ansi-to-html.ts'
+import "../scripts/ansi-to-html.ts";
 
 hljs.registerLanguage("python", python);
 
@@ -158,7 +158,26 @@ const modifiedCode = "modifiedCode" in game ? game.modifiedCode : null;
         }
       </section>
       <section id="section--game-description" class="">
-        {game.description}
+        <div class="flex flex-row gap-14 items-center">
+          <div class="w-3/5">
+            <h2 class="text-3xl">{game.title}</h2>
+            <p class="text-sm text-gray-400 mt-2">{game.description}</p>
+            <div class="flex flex-row gap-1 items-center mt-4">
+              {
+                game.dependencies.map((d) => (
+                  <span class="bg-slate-700 px-3 py-1 rounded">{d.text}</span>
+                ))
+              }
+            </div>
+          </div>
+          <div class="w-2/5">
+            <img
+              class="w-full h-auto object-cover"
+              src={game.imageUrl}
+              alt={`Imagen del ejecución del juego ${game.title}`}
+            />
+          </div>
+        </div>
       </section>
     </div>
   </main>
@@ -342,7 +361,6 @@ const modifiedCode = "modifiedCode" in game ? game.modifiedCode : null;
   hljs.highlightAll();
 </script>
 
-
 <script
   is:inline
   type="module"
@@ -351,7 +369,7 @@ const modifiedCode = "modifiedCode" in game ? game.modifiedCode : null;
     modified_code: modifiedCode,
   }}
 >
-  import { loadPyodide }  from "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.mjs" 
+  import { loadPyodide } from "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.mjs";
   import { ansiToHtml } from "/src/scripts/ansi-to-html";
   const executionIndicator = document.querySelector("#execution-indicator");
   const executeButton = document.querySelector("#start-button");
