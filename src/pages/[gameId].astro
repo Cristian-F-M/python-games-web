@@ -361,6 +361,8 @@ const modifiedCode = "modifiedCode" in game ? game.modifiedCode : null;
   hljs.highlightAll();
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/ansi_up@5.0.0/ansi_up.min.js" type="text/javascript" is:inline></script>
+
 <script
   is:inline
   type="module"
@@ -370,7 +372,6 @@ const modifiedCode = "modifiedCode" in game ? game.modifiedCode : null;
   }}
 >
   import { loadPyodide } from "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.mjs";
-  import { ansiToHtml } from "/src/scripts/ansi-to-html";
   const executionIndicator = document.querySelector("#execution-indicator");
   const executeButton = document.querySelector("#start-button");
   const $terminal = document.querySelector("#section--execution");
@@ -378,6 +379,8 @@ const modifiedCode = "modifiedCode" in game ? game.modifiedCode : null;
   const loadingPyodide = document.querySelector("#loading-pyodide");
   const loadingPyodideClone = loadingPyodide.cloneNode(true);
   let pyodide = null;
+  var ansi_up = new AnsiUp;
+  ansi_up.escape_for_html = false;
 
   executeButton?.addEventListener("click", (event) => {
     executeGame();
@@ -529,8 +532,11 @@ const modifiedCode = "modifiedCode" in game ? game.modifiedCode : null;
       if (lineBreak) printLine.classList.add("line-break");
       if (showIndicator) printLine.classList.add("!-ml-1");
 
+      const html = ansi_up.ansi_to_html(newContent).replace(/&amp;nbsp;/g, ' ')
+
       printLine.classList.add("print-line");
-      printLine.innerHTML = ansiToHtml(`${indicator}${newContent}`);
+      printLine.innerHTML = indicator
+      printLine.innerHTML += html
 
       lastLineBreak = lineBreak;
 
