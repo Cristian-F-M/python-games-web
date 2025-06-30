@@ -532,7 +532,7 @@ const modifiedCode = "modifiedCode" in game ? game.modifiedCode : null;
       if (lineBreak) printLine.classList.add("line-break");
       if (showIndicator) printLine.classList.add("!-ml-1");
 
-      const html = ansi_up.ansi_to_html(newContent).replace(/&amp;nbsp;/g, ' ')
+      const html = ansi_up.ansi_to_html(newContent).replace(/&amp;nbsp;/g, '&nbsp;')
 
       printLine.classList.add("print-line");
       printLine.innerHTML = indicator
